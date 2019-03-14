@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import adapter.ListAdapter;
 import database.DatabaseHelper;
 
-public class SellerList extends Fragment {
+public class SellerList extends Fragment implements ListAdapter.ItemClicked {
     FloatingActionButton fab;
     String name;
     String phone;
@@ -127,5 +127,10 @@ public class SellerList extends Fragment {
     public void onDestroy() {
         super.onDestroy();
         MyDb.close();
+    }
+
+    @Override
+    public void onItemClicked(int index) {
+
     }
 }

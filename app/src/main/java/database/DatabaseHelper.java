@@ -69,6 +69,20 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return cursor;
     }
 
+    public boolean updateStock(String product, int qty) {
+        int cQty = 0;
+        Cursor cursor = getStock(product);
+        while (cursor.moveToNext()) {
+            cQty = cursor.getInt(2);
+        }
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put(StockEntry.COL_STOCK_QTY, cQty + qty);
+        long result = db.update(StockEntry.TABLE_NAME, cv, "product=?", new String[]{product});
+        if (result == -1) return false;
+        else return true;
+    }
+
     public boolean insertCustomer(String name, String phone, int bill, int balance) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();

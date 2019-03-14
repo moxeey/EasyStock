@@ -52,7 +52,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
         switch (LIST_FRAGMENT) {
             case 0: {
                 holder.itemView.setTag(mCustomers.get(position));
-                holder.tvName.setText(holder.tvName.getText() + mCustomers.get(position).getName().toUpperCase());
+                holder.tvName.setText(mCustomers.get(position).getName().toUpperCase());
                 holder.tvPhone.setText(holder.tvPhone.getText() + mCustomers.get(position).getPhone());
                 holder.tvBal.setText(holder.tvBal.getText() + String.valueOf(mCustomers.get(position).getBf()));
                 holder.tvCredit.setText(holder.tvCredit.getText() + String.valueOf(mCustomers.get(position).getCb()));

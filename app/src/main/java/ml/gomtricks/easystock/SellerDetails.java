@@ -10,7 +10,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -50,8 +49,7 @@ public class SellerDetails extends Fragment {
         final LinearLayoutManager listLayoutManager = new LinearLayoutManager(this.getContext());
         detailsRecycler.setLayoutManager(listLayoutManager);
 
-        getSellerBills("muhd");
-        Toast.makeText(this.getContext(), String.valueOf(mSellerBills.size()), Toast.LENGTH_SHORT).show();
+        getSellerBills("Muhd");
         final DetailsAdapter detailsAdapter = new DetailsAdapter(this.getContext(), mSellerBills, mSellerProducts);
         detailsRecycler.setAdapter(detailsAdapter);
     }
@@ -92,7 +90,7 @@ public class SellerDetails extends Fragment {
             qty = cursor.getInt(4);
             rate = cursor.getInt(5);
 
-            mSellerProducts.add(new SellerProduct(billNo, product, qty, rate));
+            mSellerProducts.add(new SellerProduct(billNo, seller, product, qty, rate));
         }
         cursor.close();
     }

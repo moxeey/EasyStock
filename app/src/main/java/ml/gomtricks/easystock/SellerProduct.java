@@ -2,12 +2,14 @@ package ml.gomtricks.easystock;
 
 public class SellerProduct {
     private int billNo;
+    private String seller;
     private String product;
     private int qty;
     private int rate;
 
-    public SellerProduct(int billNo, String product, int qty, int rate) {
+    public SellerProduct(int billNo, String seller, String product, int qty, int rate) {
         this.billNo = billNo;
+        this.seller = seller;
         this.product = product;
         this.qty = qty;
         this.rate = rate;
@@ -43,5 +45,13 @@ public class SellerProduct {
 
     public void setRate(int rate) {
         this.rate = rate;
+    }
+
+    public String getSeller() {
+        return seller;
+    }
+
+    public void setSeller(String seller) {
+        this.seller = seller;
     }
 }
