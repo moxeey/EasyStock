@@ -60,7 +60,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
             }
             case 1: {
                 holder.itemView.setTag(mSellers.get(position));
-                holder.tvName.setText(holder.tvName.getText() + mSellers.get(position).getName().toUpperCase());
+                holder.tvName.setText(mSellers.get(position).getName().toUpperCase());
                 holder.tvPhone.setText(holder.tvPhone.getText() + mSellers.get(position).getPhone());
                 holder.tvBal.setText(holder.tvBal.getText() + String.valueOf(mSellers.get(position).getBf()));
                 holder.tvCredit.setText(holder.tvCredit.getText() + String.valueOf(mSellers.get(position).getCb()));
@@ -85,7 +85,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
     }
 
     public interface ItemClicked {
-        void onItemClicked(int index);
+        void onItemClicked(String name);
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -104,10 +104,10 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
                 public void onClick(View v) {
                     switch (LIST_FRAGMENT) {
                         case 0:
-                            activity.onItemClicked((mCustomers.indexOf((Customer) v.getTag())));
+                            activity.onItemClicked(mCustomers.get(mCustomers.indexOf((Customer) v.getTag())).getName());
                             break;
                         case 1:
-                            activity.onItemClicked((mSellers.indexOf((Seller) v.getTag())));
+                            activity.onItemClicked(mSellers.get(mSellers.indexOf((Seller) v.getTag())).getName());
                             break;
                     }
 

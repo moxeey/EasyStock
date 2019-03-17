@@ -12,10 +12,12 @@ import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.List;
 
+import ml.gomtricks.easystock.CustomerBill;
+import ml.gomtricks.easystock.CustomerProduct;
 import ml.gomtricks.easystock.R;
 import ml.gomtricks.easystock.SellerBill;
 import ml.gomtricks.easystock.SellerProduct;
@@ -25,22 +27,36 @@ public class DetailsAdapter extends RecyclerView.Adapter<DetailsAdapter.ViewHold
     final private LayoutInflater mLayoutInflater;
     private ArrayList<SellerBill> mSellerBills;
     private ArrayList<SellerProduct> mSellerProducts;
+    private final int FRAGMENT_TYPE;
+    private ArrayList<CustomerBill> mCustomerBills;
+    private ArrayList<CustomerProduct> mCustomerProducts;
     public TableLayout mTableLayout;
     public LinearLayout.LayoutParams mTableRowPrams;
-    boolean firstBindBind = true;
-    private int currentPosition;
 
 
-    public DetailsAdapter(Context context, ArrayList<SellerBill> sellerBills, ArrayList<SellerProduct> sellerProducts) {
+    public DetailsAdapter(Context context, ArrayList<SellerBill> sellerBills,
+                          ArrayList<SellerProduct> sellerProducts, int fragment_type) {
         mContext = context;
+        FRAGMENT_TYPE = fragment_type;
         mLayoutInflater = LayoutInflater.from(mContext);
         mSellerBills = sellerBills;
         mSellerProducts = sellerProducts;
     }
 
+    public DetailsAdapter(Context context, ArrayList<CustomerBill> customerBills,
+                          ArrayList<CustomerProduct> customerProducts, int a, int fragment_type) {
+        mContext = context;
+        FRAGMENT_TYPE = fragment_type;
+        mLayoutInflater = LayoutInflater.from(mContext);
+        mCustomerBills = customerBills;
+        mCustomerProducts = customerProducts;
+
+    }
+
     public DetailsAdapter(Context context) {
         mContext = context;
         mLayoutInflater = LayoutInflater.from(mContext);
+        FRAGMENT_TYPE = -1;
     }
 
     @NonNull
@@ -50,24 +66,54 @@ public class DetailsAdapter extends RecyclerView.Adapter<DetailsAdapter.ViewHold
         return new ViewHolder(itemView);
     }
 
-    private boolean firstBind = true;
-
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
-        holder.itemView.setTag(mSellerBills.get(position));
-        holder.tvDate.setText(mSellerBills.get(position).getDate());
-        holder.tvTotal.setText("Total: " + String.valueOf(mSellerBills.get(position).getAmount()));
-        holder.tvCash.setText("Cash: " + String.valueOf(mSellerBills.get(position).getCash()));
-        holder.tvTransfer.setText("Transfer: " + String.valueOf(mSellerBills.get(position).getTransfer()));
-        holder.tvBalance.setText("Balance: " + String.valueOf(mSellerBills.get(position).getBalance()));
-        currentPosition = position;
+        switch (FRAGMENT_TYPE) {
+            case 0: {
+                holder.itemView.setTag(mSellerBills.get(position));
+                holder.tvDate.setText(mSellerBills.get(position).getDate());
 
+                getTableHead();
+                getProductRow(position, mSellerBills, mSellerProducts);
+
+                holder.tvTotal.setText("Total: " + String.valueOf(mSellerBills.get(position).getAmount()));
+                holder.tvCash.setText("Cash: " + String.valueOf(mSellerBills.get(position).getCash()));
+                holder.tvTransfer.setText("Transfer: " + String.valueOf(mSellerBills.get(position).getTransfer()));
+                holder.tvBalance.setText("Balance: " + String.valueOf(mSellerBills.get(position).getBalance()));
+                break;
+            }
+            case 1: {
+                holder.itemView.setTag(mCustomerBills.get(position));
+                holder.tvDate.setText(mCustomerBills.get(position).getDate());
+
+                getTableHead();
+                getProductRow(position, mCustomerBills, mCustomerProducts);
+
+                holder.tvTotal.setText("Total: " + String.valueOf(mCustomerBills.get(position).getAmount()));
+                holder.tvCash.setText("Cash: " + String.valueOf(mCustomerBills.get(position).getCash()));
+                holder.tvTransfer.setText("Transfer: " + String.valueOf(mCustomerBills.get(position).getTransfer()));
+                holder.tvBalance.setText("Balance: " + String.valueOf(mCustomerBills.get(position).getBalance()));
+                break;
+            }
+        }
+        
     }
 
     @Override
     public int getItemCount() {
-        return mSellerBills.size();
+        int size = 0;
+        switch (FRAGMENT_TYPE) {
+            case 0: {
+                size = mSellerBills.size();
+                break;
+            }
+            case 1: {
+                size = mCustomerBills.size();
+                break;
+            }
+        }
+        return size;
     }
 
     public void getTableHead() {
@@ -109,19 +155,10 @@ public class DetailsAdapter extends RecyclerView.Adapter<DetailsAdapter.ViewHold
         lblAmount.setLayoutParams(cellParams);
     }
 
-    public void getProductRow(int position) {
+    public void getProductRow(int position, ArrayList<SellerBill> bills, ArrayList<SellerProduct> products) {
 
-
-//        while(counter < mSellerBills.size()) {
-        for (int j = 0; j < mSellerProducts.size(); j++) {
-            if (mSellerProducts.get(j).getBillNo() == mSellerBills.get(position).getBillNo()) {
-                Toast.makeText(mContext, String.valueOf(mSellerProducts.get(j).getBillNo()) + " item at: " +
-                                String.valueOf(position),
-                        Toast.LENGTH_SHORT).show();
-                if (firstBind) {
-                    j = -1;
-                    firstBind = false;
-                }
+        for (int j = 0; j < products.size(); j++) {
+            if (products.get(j).getBillNo() == bills.get(position).getBillNo()) {
                 TextView tvProduct, tvQty, tvPrice, tvAmount;
 
                 TableRow productRow = new TableRow(mContext);
@@ -134,10 +171,10 @@ public class DetailsAdapter extends RecyclerView.Adapter<DetailsAdapter.ViewHold
                 tvPrice = new TextView(mContext);
                 tvAmount = new TextView(mContext);
 
-                tvProduct.setText(mSellerProducts.get(j + 1).getProduct());
-                tvQty.setText(String.valueOf(mSellerProducts.get(j + 1).getQty()));
-                tvPrice.setText(String.valueOf(mSellerProducts.get(j + 1).getRate()));
-                tvAmount.setText(String.valueOf(mSellerProducts.get(j + 1).getQty() * mSellerProducts.get(j + 1).getRate()));
+                tvProduct.setText(products.get(j).getProduct());
+                tvQty.setText(String.valueOf(products.get(j).getQty()));
+                tvPrice.setText(String.valueOf(products.get(j).getRate()));
+                tvAmount.setText(String.valueOf(products.get(j).getQty() * products.get(j).getRate()));
 
                 productRow.addView(tvProduct);
                 productRow.addView(tvQty);
@@ -156,9 +193,46 @@ public class DetailsAdapter extends RecyclerView.Adapter<DetailsAdapter.ViewHold
             }
 
         }
-//            counter ++;
-//        }
-        Toast.makeText(mContext, "rowProduct is called", Toast.LENGTH_SHORT).show();
+    }
+
+    public void getProductRow(int position, ArrayList<CustomerBill> bills, List<CustomerProduct> products) {
+
+        for (int j = 0; j < products.size(); j++) {
+            if (products.get(j).getBillNo() == bills.get(position).getBillNo()) {
+                TextView tvProduct, tvQty, tvPrice, tvAmount;
+
+                TableRow productRow = new TableRow(mContext);
+                productRow.setId(j);
+                productRow.setPadding(5, 5, 5, 5);
+                productRow.setLayoutParams(mTableRowPrams);
+
+                tvProduct = new TextView(mContext);
+                tvQty = new TextView(mContext);
+                tvPrice = new TextView(mContext);
+                tvAmount = new TextView(mContext);
+
+                tvProduct.setText(products.get(j).getProduct());
+                tvQty.setText(String.valueOf(products.get(j).getQty()));
+                tvPrice.setText(String.valueOf(products.get(j).getPrice()));
+                tvAmount.setText(String.valueOf(products.get(j).getQty() * products.get(j).getPrice()));
+
+                productRow.addView(tvProduct);
+                productRow.addView(tvQty);
+                productRow.addView(tvPrice);
+                productRow.addView(tvAmount);
+
+                mTableLayout.addView(productRow, mTableRowPrams);
+                TableRow.LayoutParams cellParams = new TableRow.LayoutParams(0, mTableRowPrams.width);
+                cellParams.weight = 1;
+                tvProduct.setLayoutParams(cellParams);
+                tvQty.setLayoutParams(cellParams);
+                tvPrice.setLayoutParams(cellParams);
+                tvAmount.setLayoutParams(cellParams);
+
+
+            }
+
+        }
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -178,8 +252,6 @@ public class DetailsAdapter extends RecyclerView.Adapter<DetailsAdapter.ViewHold
                     LinearLayout.LayoutParams.MATCH_PARENT,
                     LinearLayout.LayoutParams.WRAP_CONTENT);
 
-            getTableHead();
-            getProductRow(currentPosition);
         }
     }
 

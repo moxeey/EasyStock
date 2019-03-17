@@ -23,8 +23,9 @@ public class CustomerActivity extends AppCompatActivity implements ListAdapter.I
     }
 
 
+
     @Override
-    public void onItemClicked(int index) {
+    public void onItemClicked(String name) {
         fm.beginTransaction()
                 .hide(fm.findFragmentById(R.id.list_fragment))
                 .show(fm.findFragmentById(R.id.detail_fragment))

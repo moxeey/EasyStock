@@ -19,9 +19,10 @@ import android.widget.Toast;
 import java.util.ArrayList;
 
 import adapter.ListAdapter;
+import adapter.ListAdapter.ItemClicked;
 import database.DatabaseHelper;
 
-public class SellerList extends Fragment implements ListAdapter.ItemClicked {
+public class SellerList extends Fragment implements ItemClicked {
     FloatingActionButton fab;
     String name;
     String phone;
@@ -129,8 +130,9 @@ public class SellerList extends Fragment implements ListAdapter.ItemClicked {
         MyDb.close();
     }
 
+
     @Override
-    public void onItemClicked(int index) {
+    public void onItemClicked(String name) {
 
     }
 }

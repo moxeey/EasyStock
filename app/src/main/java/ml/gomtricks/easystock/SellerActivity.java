@@ -23,7 +23,7 @@ public class SellerActivity extends AppCompatActivity implements ListAdapter.Ite
     }
 
     @Override
-    public void onItemClicked(int index) {
+    public void onItemClicked(String name) {
         fm.beginTransaction()
                 .hide(fm.findFragmentById(R.id.list_seller))
                 .show(fm.findFragmentById(R.id.details_seller))

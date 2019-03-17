@@ -50,7 +50,7 @@ public class SellerDetails extends Fragment {
         detailsRecycler.setLayoutManager(listLayoutManager);
 
         getSellerBills("Muhd");
-        final DetailsAdapter detailsAdapter = new DetailsAdapter(this.getContext(), mSellerBills, mSellerProducts);
+        final DetailsAdapter detailsAdapter = new DetailsAdapter(this.getContext(), mSellerBills, mSellerProducts, 0);
         detailsRecycler.setAdapter(detailsAdapter);
     }
 

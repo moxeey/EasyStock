@@ -83,6 +83,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         else return true;
     }
 
+
     public boolean insertCustomer(String name, String phone, int bill, int balance) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
@@ -110,6 +111,42 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         Cursor cursor = db.rawQuery(query, null);
         return cursor;
     }
+
+    public Cursor getCustomerBill(String customer) {
+        Cursor cursor;
+        SQLiteDatabase db = this.getWritableDatabase();
+        String query = "SELECT * FROM " + CustomerBillEntry.TABLE_NAME + " WHERE " + CustomerBillEntry.COL_CUSTOMER_NAME + " = '" + customer + "'";
+        cursor = db.rawQuery(query, null);
+        return cursor;
+    }
+
+    public boolean updateCustomer(String name, int bill, int balance) {
+        int cBill = 0;
+        int cBal = 0;
+        Cursor cursor = getCustomer(name);
+        while (cursor.moveToNext()) {
+            cBill = cursor.getInt(3);
+            cBill = cursor.getInt(4);
+        }
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put(CustomerEntry.COL_CUSTOMER_BILL, cBill + bill);
+        cv.put(CustomerEntry.COL_CUSTOMER_BILL, cBal + balance);
+        long result = db.update(CustomerEntry.TABLE_NAME, cv, "_id=?", new String[]{getCustomerID(name)});
+        if (result == -1) return false;
+        else return true;
+    }
+
+    public String getCustomerID(String name) {
+        Cursor cursor = getCustomer(name);
+        String id = "1";
+        while (cursor.moveToNext()) {
+            id = cursor.getString(0);
+        }
+
+        return id;
+    }
+
 
     public boolean insertSeller(String name, String phone, int bill, int balance) {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -174,6 +211,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return cursor;
     }
 
+
     public boolean insertProductIn(int billNo, String product, int qty, int rate, String seller) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
@@ -208,10 +246,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         else return true;
     }
 
-    public Cursor getProductOut(String customer, int billNo) {
+    public Cursor getProductOut(String customer) {
         SQLiteDatabase db = this.getWritableDatabase();
-        String query = "SELECT * FROM " + productOut.TABLE_NAME + " WHERE " + productOut.COL_BILL_NO + " = " + billNo + " AND " +
-                ProductIn.COL_SELLER_NAME + " = " + customer;
+        String query = "SELECT * FROM " + productOut.TABLE_NAME + " WHERE " +
+                DatabaseContract.productOut.COL_CUSTOMER_NAME + " = '" + customer + "'";
         Cursor cursor = db.rawQuery(query, null);
         return cursor;
     }
