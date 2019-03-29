@@ -104,10 +104,10 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
                 public void onClick(View v) {
                     switch (LIST_FRAGMENT) {
                         case 0:
-                            activity.onItemClicked(mCustomers.get(mCustomers.indexOf((Customer) v.getTag())).getName());
+                            activity.onItemClicked(mCustomers.get(getAdapterPosition()).getName());
                             break;
                         case 1:
-                            activity.onItemClicked(mSellers.get(mSellers.indexOf((Seller) v.getTag())).getName());
+                            activity.onItemClicked(mSellers.get(getAdapterPosition()).getName());
                             break;
                     }
 

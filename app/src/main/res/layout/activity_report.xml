@@ -1,8 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="15dp"
     tools:context=".ReportActivity">
 
-</android.support.constraint.ConstraintLayout>
+    <TextView
+        android:id="@+id/tv_from"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:gravity="center"
+        android:text="From"
+        android:textSize="30sp" />
+
+    <TextView
+        android:id="@+id/tv_to"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:gravity="center"
+        android:text="To"
+        android:textSize="30sp" />
+
+    <Button
+        android:id="@+id/btn_chk"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="50dp"
+        android:text="Check"
+        android:textSize="20dp" />
+
+    <TextView
+        android:id="@+id/tv_purchased"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:text="Purchased: "
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/sales"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="Sales: "
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/tv_profit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="Profit: "
+        android:textSize="20sp" />
+
+</LinearLayout>

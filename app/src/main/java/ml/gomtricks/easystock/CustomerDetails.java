@@ -25,6 +25,9 @@ public class CustomerDetails extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Bundle bundle = getArguments();
+        if (bundle != null)
+            customer = bundle.getString("name");
     }
 
     @Nullable
@@ -46,7 +49,7 @@ public class CustomerDetails extends Fragment {
         final LinearLayoutManager listLayoutManager = new LinearLayoutManager(this.getContext());
         detailsRecycler.setLayoutManager(listLayoutManager);
 
-        getSCustomerBills("Musa");
+        getSCustomerBills(customer);
         final DetailsAdapter detailsAdapter = new DetailsAdapter(this.getContext(), mCustomerBills,
                 mCustomerProducts, 1, 1);
         detailsRecycler.setAdapter(detailsAdapter);

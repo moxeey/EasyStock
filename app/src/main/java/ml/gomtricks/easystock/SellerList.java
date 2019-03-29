@@ -28,6 +28,7 @@ public class SellerList extends Fragment implements ItemClicked {
     String phone;
     DatabaseHelper MyDb;
     ArrayList<Seller> mSellers;
+    ListAdapter listAdapter;
 
     public SellerList() {
 
@@ -51,7 +52,7 @@ public class SellerList extends Fragment implements ItemClicked {
         listRecycler.setLayoutManager(listLayoutManager);
 
         getSellers();
-        final ListAdapter listAdapter = new ListAdapter(this.getContext(), mSellers, 1, 1);
+        listAdapter = new ListAdapter(this.getContext(), mSellers, 1, 1);
         listRecycler.setAdapter(listAdapter);
 
         fab = (FloatingActionButton) getView().findViewById(R.id.seller_fab);
@@ -64,6 +65,8 @@ public class SellerList extends Fragment implements ItemClicked {
     }
 
     private void getSellers() {
+        mSellers.removeAll(mSellers);
+
         Cursor cursor;
         int id;
         String name;
@@ -110,6 +113,7 @@ public class SellerList extends Fragment implements ItemClicked {
                                 boolean isInserted = MyDb.insertSeller(name, phone, 0, 0);
                                 if (isInserted == true) {
                                     Toast.makeText(getActivity(), "Seller Added", Toast.LENGTH_SHORT).show();
+                                    getSellers();
                                 } else
                                     Toast.makeText(getActivity(), "Seller not Added", Toast.LENGTH_SHORT).show();
                             }
@@ -129,7 +133,6 @@ public class SellerList extends Fragment implements ItemClicked {
         super.onDestroy();
         MyDb.close();
     }
-
 
     @Override
     public void onItemClicked(String name) {

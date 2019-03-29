@@ -24,7 +24,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
-
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(StockEntry.SQL_CREATE_TABLE);
@@ -35,13 +34,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(ProductIn.SQL_CREATE_TABLE);
         db.execSQL(productOut.SQL_CREATE_TABLE);
     }
-
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS stock");
         onCreate(db);
     }
-
     public boolean insertStock(String product, int qty, int rate) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
@@ -52,7 +49,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         if (result == -1) return false;
         else return true;
     }
-
     public Cursor getStock(String product) throws SQLException {
         Cursor cursor;
         SQLiteDatabase db = this.getWritableDatabase();
@@ -61,14 +57,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return cursor;
 
     }
-
     public Cursor getAllStock() {
         SQLiteDatabase db = this.getWritableDatabase();
         String query = "SELECT * FROM " + StockEntry.TABLE_NAME;
         Cursor cursor = db.rawQuery(query, null);
         return cursor;
     }
-
     public boolean updateStock(String product, int qty) {
         int cQty = 0;
         Cursor cursor = getStock(product);
@@ -82,8 +76,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         if (result == -1) return false;
         else return true;
     }
-
-
     public boolean insertCustomer(String name, String phone, int bill, int balance) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
@@ -95,7 +87,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         if (result == -1) return false;
         else return true;
     }
-
     public Cursor getCustomer(String name) throws SQLException {
         Cursor cursor;
         SQLiteDatabase db = this.getWritableDatabase();
@@ -104,14 +95,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return cursor;
 
     }
-
     public Cursor getAllCustomer() {
         SQLiteDatabase db = this.getWritableDatabase();
         String query = "SELECT * FROM " + CustomerEntry.TABLE_NAME;
         Cursor cursor = db.rawQuery(query, null);
         return cursor;
     }
-
     public Cursor getCustomerBill(String customer) {
         Cursor cursor;
         SQLiteDatabase db = this.getWritableDatabase();
@@ -119,7 +108,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         cursor = db.rawQuery(query, null);
         return cursor;
     }
-
     public boolean updateCustomer(String name, int bill, int balance) {
         int cBill = 0;
         int cBal = 0;
@@ -136,7 +124,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         if (result == -1) return false;
         else return true;
     }
-
     public String getCustomerID(String name) {
         Cursor cursor = getCustomer(name);
         String id = "1";
@@ -146,8 +133,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         return id;
     }
-
-
     public boolean insertSeller(String name, String phone, int bill, int balance) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
@@ -159,13 +144,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         if (result == -1) return false;
         else return true;
     }
-
     public boolean updateSeller(String name, int bill, int balance) {
         int cBill = 0;
         int cBal = 0;
         Cursor cursor = getSeller(name);
         while (cursor.moveToNext()) {
-            cBill = cursor.getInt(3);
+            cBal = cursor.getInt(3);
             cBill = cursor.getInt(4);
         }
         SQLiteDatabase db = this.getWritableDatabase();
@@ -176,7 +160,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         if (result == -1) return false;
         else return true;
     }
-
     public String getSellerID(String name) {
         Cursor cursor = getSeller(name);
         String id = "1";
@@ -186,7 +169,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         return id;
     }
-
     public Cursor getSeller(String name) throws SQLException {
         Cursor cursor;
         SQLiteDatabase db = this.getWritableDatabase();
@@ -195,14 +177,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return cursor;
 
     }
-
     public Cursor getAllSeller() {
         SQLiteDatabase db = this.getWritableDatabase();
         String query = "SELECT * FROM " + SellerEntry.TABLE_NAME;
         Cursor cursor = db.rawQuery(query, null);
         return cursor;
     }
-
     public Cursor getSellerBill(String seller) {
         Cursor cursor;
         SQLiteDatabase db = this.getWritableDatabase();
@@ -211,7 +191,23 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return cursor;
     }
 
+    public Cursor getSellerReport(String from, String to) {
+        Cursor cursor;
+        SQLiteDatabase db = this.getWritableDatabase();
+        String query = "SELECT * FROM " + SellerBillEntry.TABLE_NAME + " WHERE " + SellerBillEntry.COL_BILL_DATE + " >= '" + from +
+                "' AND " + SellerBillEntry.COL_BILL_DATE + " <= '" + to + "'";
+        cursor = db.rawQuery(query, null);
+        return cursor;
+    }
 
+    public Cursor getCustomerReport(String from, String to) {
+        Cursor cursor;
+        SQLiteDatabase db = this.getWritableDatabase();
+        String query = "SELECT * FROM " + CustomerBillEntry.TABLE_NAME + " WHERE " + CustomerBillEntry.COL_BILL_DATE + " >= '" + from +
+                "' AND " + CustomerBillEntry.COL_BILL_DATE + " <= '" + to + "'";
+        cursor = db.rawQuery(query, null);
+        return cursor;
+    }
     public boolean insertProductIn(int billNo, String product, int qty, int rate, String seller) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
@@ -224,7 +220,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         if (result == -1) return false;
         else return true;
     }
-
     public Cursor getProductIn(String seller) {
         SQLiteDatabase db = this.getWritableDatabase();
         String query = "SELECT * FROM " + ProductIn.TABLE_NAME + " WHERE " +
@@ -232,7 +227,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         Cursor cursor = db.rawQuery(query, null);
         return cursor;
     }
-
     public boolean insertProductOut(int billNo, String product, int qty, int price, String customer) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
@@ -245,7 +239,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         if (result == -1) return false;
         else return true;
     }
-
     public Cursor getProductOut(String customer) {
         SQLiteDatabase db = this.getWritableDatabase();
         String query = "SELECT * FROM " + productOut.TABLE_NAME + " WHERE " +
@@ -253,7 +246,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         Cursor cursor = db.rawQuery(query, null);
         return cursor;
     }
-
     public boolean insertCustomerBill(int billNo, String customer, int amount, int cash, int transfer, int balance, String date) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
@@ -268,7 +260,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         if (result == -1) return false;
         else return true;
     }
-
     public boolean insertSellerBill(int billNo, String customer, int amount, int cash, int transfer, int balance, String date) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
@@ -283,7 +274,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         if (result == -1) return false;
         else return true;
     }
-
     public boolean insertProfit(int amount, String date) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
@@ -293,21 +283,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         if (result == -1) return false;
         else return true;
     }
-
     public Cursor getProfit() {
         SQLiteDatabase db = this.getWritableDatabase();
         String query = "SELECT * FROM " + profit.TABLE_NAME;
         Cursor cursor = db.rawQuery(query, null);
         return cursor;
     }
-
     public Cursor getCustomerBillNo() {
         SQLiteDatabase db = this.getWritableDatabase();
         String query = "SELECT COUNT(*) FROM " + CustomerBillEntry.TABLE_NAME;
         Cursor cursor = db.rawQuery(query, null);
         return cursor;
     }
-
     public Cursor getSellerBillNo() {
         SQLiteDatabase db = this.getWritableDatabase();
         String query = "SELECT COUNT(*) FROM " + SellerBillEntry.TABLE_NAME;

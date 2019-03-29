@@ -5,15 +5,20 @@
     android:layout_height="match_parent"
     tools:context=".SellerActivity">
 
-    <fragment
-        android:id="@+id/list_seller"
-        android:name="ml.gomtricks.easystock.SellerList"
+    <FrameLayout
+        android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <fragment
-        android:id="@+id/details_seller"
-        android:name="ml.gomtricks.easystock.SellerDetails"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+    <!--<fragment-->
+    <!--android:id="@+id/list_seller"-->
+    <!--android:name="ml.gomtricks.easystock.SellerList"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent" />-->
+
+    <!--<fragment-->
+    <!--android:id="@+id/details_seller"-->
+    <!--android:name="ml.gomtricks.easystock.SellerDetails"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent" />-->
 </android.support.constraint.ConstraintLayout>

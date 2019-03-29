@@ -16,9 +16,9 @@ public class CustomerActivity extends AppCompatActivity implements ListAdapter.I
         setContentView(R.layout.activity_customer);
         fm = this.getSupportFragmentManager();
 
+        CustomerList customerList = new CustomerList();
         fm.beginTransaction()
-                .show(fm.findFragmentById(R.id.list_fragment))
-                .hide(fm.findFragmentById(R.id.detail_fragment))
+                .replace(R.id.customer_container, customerList)
                 .commit();
     }
 
@@ -26,9 +26,13 @@ public class CustomerActivity extends AppCompatActivity implements ListAdapter.I
 
     @Override
     public void onItemClicked(String name) {
+        Bundle bundle = new Bundle();
+        bundle.putString("name", name);
+        CustomerDetails customerDetails = new CustomerDetails();
+        customerDetails.setArguments(bundle);
+
         fm.beginTransaction()
-                .hide(fm.findFragmentById(R.id.list_fragment))
-                .show(fm.findFragmentById(R.id.detail_fragment))
+                .replace(R.id.customer_container, customerDetails)
                 .addToBackStack(null)
                 .commit();
     }

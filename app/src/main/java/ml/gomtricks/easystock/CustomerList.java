@@ -60,6 +60,7 @@ public class CustomerList extends Fragment {
     }
 
     private void getCustomers() {
+        mCustomers.removeAll(mCustomers);
         Cursor cursor;
         cursor = MyDb.getAllCustomer();
         while (cursor.moveToNext()) {
@@ -95,6 +96,7 @@ public class CustomerList extends Fragment {
                                 boolean isInserted = MyDb.insertCustomer(name, phone, 0, 0);
                                 if (isInserted == true) {
                                     Toast.makeText(getActivity(), "Customer Added", Toast.LENGTH_SHORT).show();
+                                    getCustomers();
                                 } else
                                     Toast.makeText(getActivity(), "Customer not Added", Toast.LENGTH_SHORT).show();
                             }

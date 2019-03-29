@@ -29,12 +29,16 @@ public class SellerDetails extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Bundle bundle = getArguments();
+        if (bundle != null)
+            seller = bundle.getString("name");
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.details_seller, null);
+
     }
 
     @Override
@@ -49,7 +53,7 @@ public class SellerDetails extends Fragment {
         final LinearLayoutManager listLayoutManager = new LinearLayoutManager(this.getContext());
         detailsRecycler.setLayoutManager(listLayoutManager);
 
-        getSellerBills("Muhd");
+        getSellerBills(seller);
         final DetailsAdapter detailsAdapter = new DetailsAdapter(this.getContext(), mSellerBills, mSellerProducts, 0);
         detailsRecycler.setAdapter(detailsAdapter);
     }

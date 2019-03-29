@@ -64,52 +64,61 @@ public class NewStockFragment extends Fragment {
         productSpinner = (Spinner) this.getActivity().findViewById(R.id.stock_spinner);
 
         fillSpinner();
-        addStock();
+
+        btnCreate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addStock();
+                clearFields();
+            }
+        });
         btnAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 showAddDialog();
+                fillSpinner();
+            }
+        });
+        btnView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                clearFields();
             }
         });
     }
 
     public void addStock() {
-        btnCreate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String product = productSpinner.getSelectedItem().toString();
-                int qty = Integer.parseInt(et_qty.getText().toString());
-                String seller = sellerSpinner.getSelectedItem().toString();
-                int rate = Integer.parseInt(et_rate.getText().toString());
-                int cash = Integer.parseInt(et_cash.getText().toString());
-                int transfer = Integer.parseInt(et_transfer.getText().toString());
+        String product = productSpinner.getSelectedItem().toString();
+        int qty = Integer.parseInt(et_qty.getText().toString());
+        String seller = sellerSpinner.getSelectedItem().toString();
+        int rate = Integer.parseInt(et_rate.getText().toString());
+        int cash = Integer.parseInt(et_cash.getText().toString());
+        int transfer = Integer.parseInt(et_transfer.getText().toString());
 
-                int paid = cash + transfer;
-                int amount = rate * qty;
-                int balance = amount - paid;
+        int paid = cash + transfer;
+        int amount = rate * qty;
+        int balance = amount - paid;
 
-                boolean isInserted = MyDb.updateStock(product, qty);
-                if (isInserted == true) {
-                    Toast.makeText(getActivity(), "Stock Added", Toast.LENGTH_SHORT).show();
-                } else
-                    Toast.makeText(getActivity(), "Stock not Added", Toast.LENGTH_SHORT).show();
-                isInserted = MyDb.insertSellerBill(getSellerBillNo() + 1, seller, amount, cash, transfer, balance, getDate());
-                if (isInserted == true) {
-                    Toast.makeText(getActivity(), "SellerBill Created", Toast.LENGTH_SHORT).show();
-                } else
-                    Toast.makeText(getActivity(), "SellerBill not Created", Toast.LENGTH_SHORT).show();
-                isInserted = MyDb.insertProductIn(getSellerBillNo(), product, qty, rate, seller);
-                if (isInserted == true) {
-                    Toast.makeText(getActivity(), "product added", Toast.LENGTH_SHORT).show();
-                } else
-                    Toast.makeText(getActivity(), "product not added", Toast.LENGTH_SHORT).show();
-                isInserted = MyDb.updateSeller(seller, amount, balance);
-                if (isInserted == true) {
-                    Toast.makeText(getActivity(), "seller updated", Toast.LENGTH_SHORT).show();
-                } else
-                    Toast.makeText(getActivity(), "seller not updated", Toast.LENGTH_SHORT).show();
-            }
-        });
+        boolean isInserted = MyDb.updateStock(product, qty);
+        if (isInserted == true) {
+            Toast.makeText(getActivity(), "Stock Added", Toast.LENGTH_SHORT).show();
+        } else
+            Toast.makeText(getActivity(), "Stock not Added", Toast.LENGTH_SHORT).show();
+        isInserted = MyDb.insertSellerBill(getSellerBillNo() + 1, seller, amount, cash, transfer, balance, getDate());
+        if (isInserted == true) {
+            Toast.makeText(getActivity(), "SellerBill Created", Toast.LENGTH_SHORT).show();
+        } else
+            Toast.makeText(getActivity(), "SellerBill not Created", Toast.LENGTH_SHORT).show();
+        isInserted = MyDb.insertProductIn(getSellerBillNo(), product, qty, rate, seller);
+        if (isInserted == true) {
+            Toast.makeText(getActivity(), "product added", Toast.LENGTH_SHORT).show();
+        } else
+            Toast.makeText(getActivity(), "product not added", Toast.LENGTH_SHORT).show();
+        isInserted = MyDb.updateSeller(seller, amount, balance);
+        if (isInserted == true) {
+            Toast.makeText(getActivity(), "seller updated", Toast.LENGTH_SHORT).show();
+        } else
+            Toast.makeText(getActivity(), "seller not updated", Toast.LENGTH_SHORT).show();
     }
     public int getSellerBillNo() {
         Cursor cursor;
@@ -129,7 +138,6 @@ public class NewStockFragment extends Fragment {
         String date = format.format(mCalendar.getTime());
         return date;
     }
-
     public void showAddDialog() {
         //get add_dialog
         LayoutInflater layoutInflater = LayoutInflater.from(getActivity());
@@ -165,12 +173,13 @@ public class NewStockFragment extends Fragment {
         AlertDialog alertDialog = alertDialogBuilder.create();
         alertDialog.show();
     }
-
     public void fillSpinner() {
         final ArrayAdapter<String> sellerSpinAdapter;
         final ArrayAdapter<String> ProductSpinAdapter;
         Cursor result;
 
+        productsList.removeAll(productsList);
+        sellerList.removeAll(sellerList);
         result = MyDb.getAllStock();
         while (result.moveToNext()) {
             productsList.add(result.getString(1));
@@ -188,6 +197,24 @@ public class NewStockFragment extends Fragment {
         sellerSpinner.setAdapter(sellerSpinAdapter);
 
     }
+
+    public void clearFields() {
+        fillSpinner();
+        sellerSpinner.setSelection(0);
+        productSpinner.setSelection(0);
+        et_qty.setText("");
+        et_cash.setText("");
+        et_rate.setText("");
+        et_transfer.setText("");
+
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        fillSpinner();
+    }
+
     @Override
     public void onDestroyView() {
         super.onDestroyView();

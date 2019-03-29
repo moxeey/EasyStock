@@ -15,18 +15,21 @@ public class SellerActivity extends AppCompatActivity implements ListAdapter.Ite
         setContentView(R.layout.activity_seller);
 
         fm = this.getSupportFragmentManager();
-
+        SellerList sellerList = new SellerList();
         fm.beginTransaction()
-                .show(fm.findFragmentById(R.id.list_seller))
-                .hide(fm.findFragmentById(R.id.details_seller))
+                .replace(R.id.container, sellerList)
                 .commit();
     }
 
     @Override
     public void onItemClicked(String name) {
+        Bundle bundle = new Bundle();
+        bundle.putString("name", name);
+        SellerDetails sellerDetails = new SellerDetails();
+        sellerDetails.setArguments(bundle);
+
         fm.beginTransaction()
-                .hide(fm.findFragmentById(R.id.list_seller))
-                .show(fm.findFragmentById(R.id.details_seller))
+                .replace(R.id.container, sellerDetails)
                 .addToBackStack(null)
                 .commit();
     }

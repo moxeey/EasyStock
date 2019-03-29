@@ -76,13 +76,22 @@ public class NewBillFragment extends Fragment {
 
             }
         });
-        addBill();
+        btnCreate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addBill();
+                clearFields();
+            }
+        });
     }
 
     public void fillSpinner() {
         final ArrayAdapter<String> customerSpinAdapter;
         final ArrayAdapter<String> ProductSpinAdapter;
         Cursor result;
+
+        products.removeAll(products);
+        customers.removeAll(customers);
 
         result = MyDb.getAllStock();
         while (result.moveToNext()) {
@@ -104,42 +113,37 @@ public class NewBillFragment extends Fragment {
     }
 
     public void addBill() {
-        btnCreate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String product = productSpinner.getSelectedItem().toString();
-                int qty = Integer.parseInt(etQty.getText().toString());
-                String customer = customerSpin.getSelectedItem().toString();
-                int price = Integer.parseInt(etPrice.getText().toString());
-                int cash = Integer.parseInt(etCash.getText().toString());
-                int transfer = Integer.parseInt(etTransfer.getText().toString());
+        String product = productSpinner.getSelectedItem().toString();
+        int qty = Integer.parseInt(etQty.getText().toString());
+        String customer = customerSpin.getSelectedItem().toString();
+        int price = Integer.parseInt(etPrice.getText().toString());
+        int cash = Integer.parseInt(etCash.getText().toString());
+        int transfer = Integer.parseInt(etTransfer.getText().toString());
 
-                int paid = cash + transfer;
-                int amount = price * qty;
-                int balance = amount - paid;
+        int paid = cash + transfer;
+        int amount = price * qty;
+        int balance = amount - paid;
 
-                boolean isInserted = MyDb.updateStock(product, -qty);
-                if (isInserted == true) {
-                    Toast.makeText(getActivity(), "Stock Added", Toast.LENGTH_SHORT).show();
-                } else
-                    Toast.makeText(getActivity(), "Stock not Added", Toast.LENGTH_SHORT).show();
-                isInserted = MyDb.insertCustomerBill(getCustomerBillNo() + 1, customer, amount, cash, transfer, balance, getDate());
-                if (isInserted == true) {
-                    Toast.makeText(getActivity(), "CustomerBill Created", Toast.LENGTH_SHORT).show();
-                } else
-                    Toast.makeText(getActivity(), "CustomerBill not Created", Toast.LENGTH_SHORT).show();
-                isInserted = MyDb.insertProductOut(getCustomerBillNo(), product, qty, price, customer);
-                if (isInserted == true) {
-                    Toast.makeText(getActivity(), "product added", Toast.LENGTH_SHORT).show();
-                } else
-                    Toast.makeText(getActivity(), "product not added", Toast.LENGTH_SHORT).show();
-                isInserted = MyDb.updateCustomer(customer, amount, balance);
-                if (isInserted == true) {
-                    Toast.makeText(getActivity(), "customer updated", Toast.LENGTH_SHORT).show();
-                } else
-                    Toast.makeText(getActivity(), "customer not updated", Toast.LENGTH_SHORT).show();
-            }
-        });
+        boolean isInserted = MyDb.updateStock(product, -qty);
+        if (isInserted == true) {
+            Toast.makeText(getActivity(), "Stock Added", Toast.LENGTH_SHORT).show();
+        } else
+            Toast.makeText(getActivity(), "Stock not Added", Toast.LENGTH_SHORT).show();
+        isInserted = MyDb.insertCustomerBill(getCustomerBillNo() + 1, customer, amount, cash, transfer, balance, getDate());
+        if (isInserted == true) {
+            Toast.makeText(getActivity(), "CustomerBill Created", Toast.LENGTH_SHORT).show();
+        } else
+            Toast.makeText(getActivity(), "CustomerBill not Created", Toast.LENGTH_SHORT).show();
+        isInserted = MyDb.insertProductOut(getCustomerBillNo(), product, qty, price, customer);
+        if (isInserted == true) {
+            Toast.makeText(getActivity(), "product added", Toast.LENGTH_SHORT).show();
+        } else
+            Toast.makeText(getActivity(), "product not added", Toast.LENGTH_SHORT).show();
+        isInserted = MyDb.updateCustomer(customer, amount, balance);
+        if (isInserted == true) {
+            Toast.makeText(getActivity(), "customer updated", Toast.LENGTH_SHORT).show();
+        } else
+            Toast.makeText(getActivity(), "customer not updated", Toast.LENGTH_SHORT).show();
     }
 
     public int getCustomerBillNo() {
@@ -161,9 +165,23 @@ public class NewBillFragment extends Fragment {
         String date = format.format(mCalendar.getTime());
         return date;
     }
+
+    public void clearFields() {
+        fillSpinner();
+        etPrice.setText("");
+        etCash.setText("");
+        etTransfer.setText("");
+        etQty.setText("");
+    }
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         MyDb.close();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        fillSpinner();
     }
 }
