@@ -114,7 +114,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         Cursor cursor = getCustomer(name);
         while (cursor.moveToNext()) {
             cBill = cursor.getInt(3);
-            cBill = cursor.getInt(4);
+            cBal = cursor.getInt(4);
         }
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
@@ -149,8 +149,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         int cBal = 0;
         Cursor cursor = getSeller(name);
         while (cursor.moveToNext()) {
-            cBal = cursor.getInt(3);
-            cBill = cursor.getInt(4);
+            cBal = cursor.getInt(4);
+            cBill = cursor.getInt(3);
         }
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
@@ -300,5 +300,33 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         String query = "SELECT COUNT(*) FROM " + SellerBillEntry.TABLE_NAME;
         Cursor cursor = db.rawQuery(query, null);
         return cursor;
+    }
+
+    public boolean sellerAddCash(String name, int amount) {
+        int cBal = 0;
+        Cursor cursor = getSeller(name);
+        while (cursor.moveToNext()) {
+            cBal = cursor.getInt(4);
+        }
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put(SellerEntry.COL_SELLER_BALANCE, cBal - amount);
+        long result = db.update(SellerEntry.TABLE_NAME, cv, "_id=?", new String[]{getSellerID(name)});
+        if (result == -1) return false;
+        else return true;
+    }
+
+    public boolean customerAddCash(String name, int amount) {
+        int cBal = 0;
+        Cursor cursor = getCustomer(name);
+        while (cursor.moveToNext()) {
+            cBal = cursor.getInt(4);
+        }
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put(CustomerEntry.COL_CUSTOMER_BALANCE, cBal - amount);
+        long result = db.update(CustomerEntry.TABLE_NAME, cv, "_id=?", new String[]{getCustomerID(name)});
+        if (result == -1) return false;
+        else return true;
     }
 }

@@ -61,4 +61,5 @@
             android:text="Balance: " />
     </LinearLayout>
 
+
 </android.support.v7.widget.CardView>

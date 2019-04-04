@@ -61,14 +61,25 @@ public class CustomerList extends Fragment {
 
     private void getCustomers() {
         mCustomers.removeAll(mCustomers);
+
         Cursor cursor;
+        int id;
+        String name;
+        String phone;
+        int bill;
+        int bal = 0;
+        int credit = 0;
         cursor = MyDb.getAllCustomer();
         while (cursor.moveToNext()) {
-            mCustomers.add(new Customer(cursor.getInt(0),
-                    cursor.getString(1),
-                    cursor.getString(2),
-                    cursor.getInt(3),
-                    cursor.getInt(4)));
+            id = cursor.getInt(0);
+            name = cursor.getString(1);
+            phone = cursor.getString(2);
+            bill = cursor.getInt(3);
+            int balance = cursor.getInt(4);
+            if (balance < 0) {
+                credit = cursor.getInt(4) * (-1);
+            } else bal = cursor.getInt(4);
+            mCustomers.add(new Customer(id, name, phone, bal, credit));
         }
     }
 

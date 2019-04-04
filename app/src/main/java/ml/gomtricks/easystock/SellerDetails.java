@@ -1,15 +1,20 @@
 package ml.gomtricks.easystock;
 
+import android.content.DialogInterface;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -21,6 +26,8 @@ public class SellerDetails extends Fragment {
     ArrayList<SellerBill> mSellerBills;
     ArrayList<SellerProduct> mSellerProducts;
     String seller;
+    FloatingActionButton addFab, viewFab;
+    private int amount;
 
     public SellerDetails() {
 
@@ -45,6 +52,8 @@ public class SellerDetails extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+        addFab = (FloatingActionButton) getView().findViewById(R.id.seller_cash_fab);
+        viewFab = (FloatingActionButton) getView().findViewById(R.id.seller_dep_fab);
         mSellerBills = new ArrayList<>();
         mSellerProducts = new ArrayList<>();
         MyDb = new DatabaseHelper(this.getContext());
@@ -56,6 +65,13 @@ public class SellerDetails extends Fragment {
         getSellerBills(seller);
         final DetailsAdapter detailsAdapter = new DetailsAdapter(this.getContext(), mSellerBills, mSellerProducts, 0);
         detailsRecycler.setAdapter(detailsAdapter);
+
+        addFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showAddCashDialog();
+            }
+        });
     }
 
     public void getSellerBills(String name) {
@@ -97,5 +113,42 @@ public class SellerDetails extends Fragment {
             mSellerProducts.add(new SellerProduct(billNo, seller, product, qty, rate));
         }
         cursor.close();
+    }
+
+    public void showAddCashDialog() {
+        //get add_dialog
+        LayoutInflater layoutInflater = LayoutInflater.from(getActivity());
+        View addView = layoutInflater.inflate(R.layout.add_cash_dialog, null);
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getContext());
+
+        //set add_dialog to alert dialog builder
+        alertDialogBuilder.setView(addView);
+
+        final EditText amt = (EditText) addView.findViewById(R.id.et_amount);
+
+        //set Dialog Message
+        alertDialogBuilder
+                .setCancelable(false)
+                .setPositiveButton("ADD",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                amount = Integer.parseInt(amt.getText().toString());
+                                boolean isInserted = MyDb.sellerAddCash(seller, amount);
+                                if (isInserted == true) {
+                                    Toast.makeText(getActivity(), "Cash Added", Toast.LENGTH_SHORT).show();
+//                                    getSellerBills(seller);
+                                } else
+                                    Toast.makeText(getActivity(), "Cash not Added", Toast.LENGTH_SHORT).show();
+                            }
+                        })
+                .setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.show();
     }
 }
